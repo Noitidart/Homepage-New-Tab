@@ -8,7 +8,7 @@ var useNewMethod;
 var lastVersionToUseOldMethod = '30.*';
 
 Cu.import('resource://gre/modules/Services.jsm');
-Cu.import('resource://gre/modules/devtools/Console.jsm');
+
 
 function myObserver() {
 	this.register();
@@ -39,27 +39,27 @@ myObserver.prototype = {
 
 			var gURLBar = Services.wm.getMostRecentWindow("navigator:browser").gBrowser.getBrowserForDocument(subject).ownerDocument.defaultView.gURLBar;
 			var gURLBarUpped = function (e) {
-				console.info('e', e);
-				console.info('HomepageNewTab - gURLBarUpped', 'Services.focus.focusedElement=', Services.focus.focusedElement);
+
+
 				if (e.keyCode == 9) {
 				//if (Services.focus.focusedElement == subject.querySelector('html')) {
-					console.log('looking to focus', subject.querySelector('#searchText'));
+
 					gURLBar.ownerDocument.defaultView.addEventListener('keyup', function() {
 						var AutoCompleteHidden = !PopupAutoComplete.hasAttribute('width');
-						console.log('doing');
-						console.log('popup hidden = ', AutoCompleteHidden);
+
+
 						if (AutoCompleteHidden) {
 							gURLBar.ownerDocument.defaultView.removeEventListener('keyup', arguments.callee, false);
 							if (subject.querySelector('#searchText')) {
 								if (searchText.parentNode.parentNode.style.display != 'none') {
 									searchText.focus();
-									console.log('FOCD');
+
 								} else {
-									console.log('its hidden');
+
 								}
 							}
 						} else {
-							console.log('autocomplete is vis so dont do');
+
 						}
 					}, false);
 				}
@@ -96,25 +96,25 @@ myObserver.prototype = {
 					}
 				}, false);
 				iframe.contentDocument.documentElement.addEventListener('keydown', function(e) {
-					console.info('e.target = ', e.target, e);
+
 					if (e.target.parentNode.href) {
 						e.target.parentNode.setAttribute('target', '_parent');
 					}
 				}, false);
-	console.log('ADDED MOUSEDONWN')
+
 	*/
 	//setThumbnailsTarget(iframe.contentDocument);
 	var grid = iframe.contentDocument.getElementById('newtab-grid');
 	var mobs = new iframe.contentWindow.MutationObserver(function(mutations) {
   mutations.forEach(function(mutation) {
-    console.log(mutation.type, mutation);
+
   if (mutation.addedNodes && mutation.addedNodes.length > 0) {
   	var link = mutation.target.querySelector('.newtab-link');
   	if (link) {
   		link.setAttribute('target', '_parent');
-  		console.log('set target on this el')
+
   	} else {
-  		console.log('this ell has no link BUT it was an added el')
+
   	}
   	
   }
@@ -169,7 +169,7 @@ function setThumbnailsTarget(newtabDoc) {
 }
 
 function reflectToggle(tdDoc) {
-	console.info('useNewMethod~', useNewMethod);
+
 	if (useNewMethod === undefined) {
 		var platformVersion = Services.appinfo.platformVersion;
 		useNewMethod = Services.vc.compare(platformVersion, lastVersionToUseOldMethod); //will return 1 for anything greater than lastVersionToUseOldMethod. if its same then it will be 0 or if its less than it will be -1. 
@@ -183,10 +183,10 @@ function reflectToggle(tdDoc) {
 		}
 	}
 	
-	console.log('useNewMethod=', useNewMethod);
+
 	var iframe = tdDoc.querySelector('#homepage-new-tab-iframe');
 	if (!iframe) {
-		console.warn('no iframe in this new tab tab');
+
 		return;
 	}
 	if (!useNewMethod) {
@@ -249,7 +249,7 @@ function reflectToggle(tdDoc) {
 		
 		if (gAllPagesEnabled) {
 			//show the thumnbails
-			console.info('gAllPagesEnabled=', gAllPagesEnabled, 'showing thumbnails');
+
 			var changes = {
 				body: {
 					targetDocument: parent,
@@ -316,17 +316,17 @@ function reflectToggle(tdDoc) {
 				}
 			}
 			for (var qSelector in changes) {
-				console.log('targetDocument', changes[qSelector].targetDocument == parent ? 'parent' : 'iframeDoc');
-				console.log('querySelectoring', qSelector);
+
+
 				var el = changes[qSelector].targetDocument.querySelector(qSelector);
 				
 				if (!el) {
-					console.warn('el after querySelector was undefined', el);
+
 					continue;
 				}
 				for (var prop in changes[qSelector]) {
 					if (prop == 'targetDocument') { continue; }
-					console.log('on property', prop, 'set to = ', changes[qSelector][prop]);
+
 					if (changes[qSelector][prop] === null) {
 						el.removeAttribute(prop);
 					} else {
@@ -336,7 +336,7 @@ function reflectToggle(tdDoc) {
 			}
 		} else {
 			//dont show the thumbnails
-			console.info('gAllPagesEnabled=', gAllPagesEnabled, 'hiding thumbnails');
+
 			var changes = {
 				body: {
 					targetDocument: parent,
@@ -396,17 +396,17 @@ function reflectToggle(tdDoc) {
 				}
 			}
 			for (var qSelector in changes) {
-				console.log('targetDocument', changes[qSelector].targetDocument == parent ? 'parent' : 'iframeDoc');
-				console.log('querySelectoring', qSelector);
+
+
 				var el = changes[qSelector].targetDocument.querySelector(qSelector);
 				
 				if (!el) {
-					console.warn('el after querySelector was undefined', el);
+
 					continue;
 				}
 				for (var prop in changes[qSelector]) {
 					if (prop == 'targetDocument') { continue; }
-					console.log('on property', prop, 'set to = ', changes[qSelector][prop]);
+
 					if (changes[qSelector][prop] === null) {
 						el.removeAttribute(prop);
 					} else {
