@@ -261,7 +261,7 @@ function reflectToggle(tdDoc) {
 				},
 				'#topSection': {
 					targetDocument: parent,
-					style: 'margin-top:10px;'
+					style: null
 				},
 				'#snippetContainer': {
 					targetDocument: parent,
@@ -278,11 +278,11 @@ function reflectToggle(tdDoc) {
 				'#newtab-margin-top': {
 					targetDocument: iframeDoc,
 					'style': 'display:none'
-				},
+				},*/
 				'#newtab-margin-bottom': {
 					targetDocument: iframeDoc,
-					'style': 'display:none'
-				},*/
+					'style': '-moz-box-flex:1'
+				},
 				'#newtab-search-container': {
 					targetDocument: iframeDoc,
 					style: 'display:none;'
@@ -312,7 +312,7 @@ function reflectToggle(tdDoc) {
 			} else {
 				changes['#searchContainer'] = {
 					targetDocument: parent,
-					style: null
+					style: 'position:absolute; width:100%; margin-top:50px'
 				}
 			}
 			for (var qSelector in changes) {
@@ -357,11 +357,11 @@ function reflectToggle(tdDoc) {
 				'#newtab-margin-top': {
 					targetDocument: iframeDoc,
 					'style': null
-				},
+				},*/
 				'#newtab-margin-bottom': {
 					targetDocument: iframeDoc,
 					'style': null
-				},*/
+				},
 				'#newtab-search-container': {
 					targetDocument: iframeDoc,
 					style: null
