@@ -88,63 +88,54 @@ myObserver.prototype = {
 
 
 			iframe.contentWindow.location = 'about:newtab';
-			iframe.addEventListener('load', function() {
-			/*
-				iframe.contentDocument.documentElement.addEventListener('mousedown', function(e) {
-					if (e.target.parentNode.href) {
-						e.target.parentNode.setAttribute('target', '_parent');
-					}
-				}, false);
-				iframe.contentDocument.documentElement.addEventListener('keydown', function(e) {
-					console.info('e.target = ', e.target, e);
-					if (e.target.parentNode.href) {
-						e.target.parentNode.setAttribute('target', '_parent');
-					}
-				}, false);
-	console.log('ADDED MOUSEDONWN')
-	*/
-	//setThumbnailsTarget(iframe.contentDocument);
-	var grid = iframe.contentDocument.getElementById('newtab-grid');
-	var mobs = new iframe.contentWindow.MutationObserver(function(mutations) {
-  mutations.forEach(function(mutation) {
-    console.log(mutation.type, mutation);
-  if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-  	var link = mutation.target.querySelector('.newtab-link');
-  	if (link) {
-  		link.setAttribute('target', '_parent');
-  		console.log('set target on this el')
-  	} else {
-  		console.log('this ell has no link BUT it was an added el')
-  	}
-  	
-  }
-  });
-});
-	mobs.observe(grid,{childList:!0,subtree:!0});		
-				reflectToggle(domDoc);
-				var toggleButton = iframe.contentDocument.querySelector('#newtab-toggle');
-				toggleButton.addEventListener('click', function() {
-					domDoc.defaultView.setTimeout(function() { //have to set timeout because when the toggle button is clicked i think its firing after this function, so this function will think its the old value, and because im letting that toggle button handling the showing of the thumbnails it will show it or hide it to whatever is the new
-						reflectToggle(domDoc);
-						var windows = Services.wm.getEnumerator('navigator:browser'); //THIS GETS ALL BROWSER TYPE WINDOWS (MEANING IT HAS GBROWSER)
-						while (windows.hasMoreElements()) {
-							var browserWin = windows.getNext();
-							var domWindow = browserWin.QueryInterface(Ci.nsIDOMWindow); // i dont think i need this as getEnumerator gets `nsIDOMWindow`s
-							var tabbrowser = browserWin.gBrowser;
-							var numTabs = tabbrowser.browsers.length;
-							for (var index = 0; index < numTabs; index++) {
-								var currentBrowser = tabbrowser.getBrowserAtIndex(index);
-								if (/^about\:home$/im.test(currentBrowser.currentURI.spec) && currentBrowser.contentDocument != domDoc) {
-									var inHereIframe = currentBrowser.contentDocument.querySelector('#homepage-new-tab-iframe');
-									if (inHereIframe) {
-										reflectToggle(currentBrowser.contentDocument);
-									}
-								}
-							}
-						}
-					}, 20);
-				}, false);
-				
+			iframe.addEventListener('load', function () {
+
+			    setThumbnailsTarget(iframe.contentDocument);
+			    iframe.removeEventListener('load', arguments.callee, false);
+			    var grid = iframe.contentDocument.getElementById('newtab-grid');
+			    var mobs = new iframe.contentWindow.MutationObserver(function (mutations) {
+			        mutations.forEach(function (mutation) {
+			            console.log(mutation.type, mutation);
+			            if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+			                var link = mutation.target.querySelector('.newtab-link');
+			                if (link) {
+			                    link.setAttribute('target', '_parent');
+			                    console.log('set target on this el')
+			                } else {
+			                    console.log('this ell has no link BUT it was an added el')
+			                }
+
+			            }
+			        });
+			    });
+			    mobs.observe(grid, {
+			        childList: !0,
+			        subtree: !0
+			    });
+			    reflectToggle(domDoc);
+			    var toggleButton = iframe.contentDocument.querySelector('#newtab-toggle');
+			    toggleButton.addEventListener('click', function () {
+			        domDoc.defaultView.setTimeout(function () { //have to set timeout because when the toggle button is clicked i think its firing after this function, so this function will think its the old value, and because im letting that toggle button handling the showing of the thumbnails it will show it or hide it to whatever is the new
+			            reflectToggle(domDoc);
+			            var windows = Services.wm.getEnumerator('navigator:browser'); //THIS GETS ALL BROWSER TYPE WINDOWS (MEANING IT HAS GBROWSER)
+			            while (windows.hasMoreElements()) {
+			                var browserWin = windows.getNext();
+			                var domWindow = browserWin.QueryInterface(Ci.nsIDOMWindow); // i dont think i need this as getEnumerator gets `nsIDOMWindow`s
+			                var tabbrowser = browserWin.gBrowser;
+			                var numTabs = tabbrowser.browsers.length;
+			                for (var index = 0; index < numTabs; index++) {
+			                    var currentBrowser = tabbrowser.getBrowserAtIndex(index);
+			                    if (/^about\:home$/im.test(currentBrowser.currentURI.spec) && currentBrowser.contentDocument != domDoc) {
+			                        var inHereIframe = currentBrowser.contentDocument.querySelector('#homepage-new-tab-iframe');
+			                        if (inHereIframe) {
+			                            reflectToggle(currentBrowser.contentDocument);
+			                        }
+			                    }
+			                }
+			            }
+			        }, 20);
+			    }, false);
+
 			}, false);
 		}
 
